@@ -1,6 +1,8 @@
 import io
 import logging
 import re
+import asyncio
+asyncio.set_event_loop(asyncio.new_event_loop())
 from datetime import datetime
 from collections import defaultdict
 from telegram import Update, InputFile
@@ -243,6 +245,12 @@ def main():
 
     print("Bot is running...")
     app.run_polling()
-
 if __name__ == "__main__":
-    main()
+    import asyncio
+    try:
+        asyncio.run(main())
+    except RuntimeError:
+        # Fallback for some environments
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        loop.run_until_complete(main())
